@@ -48,12 +48,6 @@ defmodule Elisper do
 		eval([expr_atom] ++ args)
 	end
 
-	def eval([:def | args], scope) do
-		# IO.puts "def"
-		[key | val] = args
-		Dict.put(scope, key, List.last(val))
-	end
-
 	def eval([expr | args] = expression, scope) when is_atom(expr) do
 		# IO.puts "atom eval expression"
 		# IO.inspect expression
@@ -73,7 +67,8 @@ defmodule Elisper do
 				else
 					second
 				end
-			) end
+			) end,
+			def: fn([key | val]) -> Dict.put_new(scope, key, List.last(val)) end
 		}
 		case Map.get(native_ops, expr) do
 			nil -> eval(expression, scope)
