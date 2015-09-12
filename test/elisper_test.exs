@@ -61,4 +61,8 @@ defmodule ElisperTest do
     ) == 2
   end
 
+ test "if clause" do
+   assert (Elisper.eval([:if, [:=, 1, 1], [:+, 1, 1], [:+, 2, 2]])) == 2
+ end
+
 end
