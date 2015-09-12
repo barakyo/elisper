@@ -45,7 +45,7 @@ defmodule ElisperTest do
   test "do clause" do
     assert (
       Elisper.eval(
-        ["do",
+        [:do,
           [IO.puts "hello"],
           [IO.puts "world"]
         ]
@@ -53,7 +53,7 @@ defmodule ElisperTest do
     ) == :ok
     assert (
       Elisper.eval(
-        ["do",
+        [:do,
           ["+", 1, 1],
           ["+", 1, 1]
         ]

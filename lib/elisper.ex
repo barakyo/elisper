@@ -1,9 +1,18 @@
 defmodule Elisper do
 	require Logger
 
-	def eval([expr | args] = expression) when is_binary(expr) do
+	def eval([expr | []]) do
+		expr
+	end
+
+	def eval([expr | args]) when is_binary(expr) do
 		# IO.inspect expression
 		# IO.puts "eval native"
+		expr_atom = String.to_atom(expr)
+		eval([expr_atom] ++ args)
+	end
+
+	def eval([expr | args] = expression) when is_atom(expr) do
 		native_ops = %{
 			+: fn (a,b) -> a + b end,
 			-: fn (a,b) -> a - b end,
@@ -12,18 +21,13 @@ defmodule Elisper do
 			=: fn (a,b) -> a == b end,
 			do: fn(do_args) -> List.last(do_args) end
 		}
-		expr_atom = String.to_atom(expr)
-		case Map.get(native_ops, expr_atom) do
+		case Map.get(native_ops, expr) do
 			nil -> eval(expression)
 			func -> eval([func] ++ args)
 		end
 	end
 
-	def eval([expr | []]) do
-		expr
-	end
-
-	def eval([expr | args] = expression) do
+	def eval([expr | args] = _expression) do
 		# Iterate through the arguments
 		# IO.puts "eval - expressions:"
 		# IO.inspect expression
