@@ -46,8 +46,8 @@ defmodule ElisperTest do
     assert (
       Elisper.eval(
         [:do,
-          [IO.puts "hello"],
-          [IO.puts "world"]
+          [:print, "hello"],
+          [:print, "world"]
         ]
       )
     ) == :ok
@@ -61,8 +61,18 @@ defmodule ElisperTest do
     ) == 2
   end
 
+  test "print fn" do
+    Elisper.eval([:print, 5])
+  end
+
  test "if clause" do
    assert (Elisper.eval([:if, [:=, 1, 1], [:+, 1, 1], [:+, 2, 2]])) == 2
+ end
+
+ test "def" do
+   assert (Elisper.eval([:def, :a, 5])) == %{a: 5}
+   assert (Elisper.eval([:do, [:def, :a, 5], [:print, :a]])) == :ok
+   assert (Elisper.eval([:do, [:def, :a, 5], [:+, :a, :a]])) == 10
  end
 
 end
