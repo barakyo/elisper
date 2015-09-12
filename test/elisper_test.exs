@@ -38,4 +38,23 @@ defmodule ElisperTest do
     assert (Elisper.eval(["+", ["+", ["+", 1, 1], 1], ["+", 1, 1]])) == 5
   end
 
+  test "do clause" do
+    assert (
+      Elisper.eval(
+        ["do",
+          [IO.puts "hello"],
+          [IO.puts "world"]
+        ]
+      )
+    ) == :ok
+    assert (
+      Elisper.eval(
+        ["do",
+          ["+", 1, 1],
+          ["+", 1, 1]
+        ]
+      )
+    ) == 2
+  end
+
 end

@@ -1,12 +1,15 @@
 defmodule Elisper do
+	require Logger
 
 	def eval([expr | args] = expression) when is_binary(expr) do
+		# IO.inspect expression
 		# IO.puts "eval native"
 		native_ops = %{
 			+: fn (a,b) -> a + b end,
 			-: fn (a,b) -> a - b end,
 			*: fn (a,b) -> a * b end,
-			/: fn (a,b) -> a / b end
+			/: fn (a,b) -> a / b end,
+			do: fn(do_args) -> List.last(do_args) end
 		}
 		expr_atom = String.to_atom(expr)
 		case Map.get(native_ops, expr_atom) do
@@ -15,8 +18,14 @@ defmodule Elisper do
 		end
 	end
 
-	def eval([expr | args]) do
+	def eval([expr | []]) do
+		expr
+	end
+
+	def eval([expr | args] = expression) do
 		# Iterate through the arguments
+		# IO.puts "eval - expressions:"
+		# IO.inspect expression
 		sub_exprs = Enum.map(args,
 			fn
 				# Recursively evaluate the argument if it is a list
@@ -26,7 +35,14 @@ defmodule Elisper do
 			end
 		)
 		# Execute the function
-		apply(expr, sub_exprs)
+		# IO.puts "sub expr"
+		# IO.inspect sub_exprs
+		if is_function(expr, length(sub_exprs)) do
+			apply(expr, sub_exprs)
+		else
+			apply(expr, [sub_exprs])
+		end
 	end
+
 
 end
