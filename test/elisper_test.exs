@@ -1,5 +1,5 @@
 defmodule ElisperTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   test "the truth" do
     assert 1 + 1 == 2
@@ -12,6 +12,10 @@ defmodule ElisperTest do
 
   test "native addition function" do
     assert (Elisper.eval(["+", 1, 2])) == 3
+  end
+
+  test "native equality function" do
+    assert (Elisper.eval(["=", 1, 1])) == true
   end
 
   test "native multiplication function" do

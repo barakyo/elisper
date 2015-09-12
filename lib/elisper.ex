@@ -9,6 +9,7 @@ defmodule Elisper do
 			-: fn (a,b) -> a - b end,
 			*: fn (a,b) -> a * b end,
 			/: fn (a,b) -> a / b end,
+			=: fn (a,b) -> a == b end,
 			do: fn(do_args) -> List.last(do_args) end
 		}
 		expr_atom = String.to_atom(expr)
