@@ -70,9 +70,32 @@ defmodule ElisperTest do
  end
 
  test "def" do
-   assert (Elisper.eval([:def, :a, 5])) == %{a: 5}
+   assert (Elisper.eval([:def, :a, 5])) == :ok 
    assert (Elisper.eval([:do, [:def, :a, 5], [:print, :a]])) == :ok
    assert (Elisper.eval([:do, [:def, :a, 5], [:+, :a, :a]])) == 10
+ end
+
+ test "def fn" do
+   Elisper.eval(
+     [:do,
+      [:def, :shout,
+        [:fn, [:planet, :greeting],
+          [:print, :greeting, :planet]
+        ]
+      ],
+      [:shout, "world", "hello"]
+     ]
+   )
+  assert (Elisper.eval(
+     [:do,
+      [:def, :multi,
+        [:fn, [:x, :y],
+          [:*, :x, :y]
+        ]
+      ],
+      [:multi, 3, 4]
+     ]
+   )) == 12
  end
 
 end

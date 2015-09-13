@@ -13,7 +13,17 @@ defmodule Elisper do
 		# IO.inspect arg
 		key = List.first(arg)
 		val = List.last(arg)
-		update_scope(t, Dict.put_new(scope, key, val))
+		# IO.inspect key
+		# IO.inspect val
+		if is_list(val) do
+			[func_name, params, body] = val
+			# Make scope
+			# { params: [:greeting, :planet], body: [:print, :greeting, :planet] }
+			func_entry = %{ params: params, body: body}
+			update_scope(t, Dict.put_new(scope, key, func_entry))
+		else
+			update_scope(t, Dict.put_new(scope, key, val))
+		end
 	end
 
 	defp update_scope([h | t], scope) do
@@ -67,11 +77,28 @@ defmodule Elisper do
 				else
 					second
 				end
-			) end,
-			def: fn([key | val]) -> Dict.put_new(scope, key, List.last(val)) end
+			) end
 		}
 		case Map.get(native_ops, expr) do
-			nil -> eval(expression, scope)
+			nil -> (
+				if expr == :fn || expr == :def do
+					:ok
+				else
+					case Map.get(scope, expr) do
+						func_def -> (
+							body = Map.get(func_def, :body)
+							params = Map.get(func_def, :params) |> Enum.zip(args)
+							# IO.puts "params"
+							# IO.inspect params
+							new_scope = Enum.reduce(params, scope, fn({key, val}, acc) -> Map.put(acc, key, val) end)
+							# IO.puts "new scope"
+							# IO.inspect new_scope
+							eval(body, new_scope)
+						)
+						nil -> eval(expression, scope)
+					end
+				end
+			)
 			func -> eval([func] ++ args, scope)
 		end
 	end
