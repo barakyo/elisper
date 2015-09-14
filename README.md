@@ -1,5 +1,6 @@
 Elisper
 =======
+[![Build Status](https://travis-ci.org/barakyo/elisper.svg?branch=master)](https://travis-ci.org/barakyo/elisper)
 
 An experimental implementation of a subset of lisp in Elixir.
 
